@@ -113,11 +113,11 @@ class SingleVarFunction(GraphScene):
         dot3 = Dot(color = MAROON_C)
         dot3.shift(self.graph_origin + X_TICKS_DISTANCE*3*RIGHT)
 
-        dot1b = Dot(color = BLUE_E)
+        dot1b = Dot(color = BLUE_A)
         dot1b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(1)*UP)
         dot2b = Dot(color = BLUE_E)
         dot2b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(2)*UP)
-        dot3b = Dot(color = BLUE_E)
+        dot3b = Dot(color = BLUE_C)
         dot3b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(3)*UP)
 
         dot1a= dot1.copy()
@@ -138,9 +138,14 @@ class SingleVarFunction(GraphScene):
         function_def.to_edge(UP)
         self.play(Transform(function_notation, function_def))
 
-        self.play(ApplyMethod(dot1a.set_color, YELLOW_D), ApplyMethod(dot2a.set_color, YELLOW_D), ApplyMethod(dot3a.set_color, YELLOW_D))
+        self.play(ApplyMethod(dot1a.set_color, YELLOW_C), ApplyMethod(dot2a.set_color, YELLOW_D), ApplyMethod(dot3a.set_color, YELLOW_D))
         self.play(ApplyMethod(dot1a.shift, np.sin(1)*Y_TICKS_DISTANCE*UP), ShowCreation(dot1b))
         self.play(ApplyMethod(dot2a.shift, np.sin(2)*Y_TICKS_DISTANCE*UP), ShowCreation(dot2b))
         self.play(ApplyMethod(dot3a.shift, np.sin(3)*Y_TICKS_DISTANCE*UP), ShowCreation(dot3b))
 
+        func_graph = self.get_graph(self.func_to_graph,YELLOW_E)
+        self.play(ShowCreation(func_graph))
         self.wait(3)
+
+    def func_to_graph(self,x):
+        return np.sin(x)
