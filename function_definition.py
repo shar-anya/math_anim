@@ -97,6 +97,7 @@ class SingleVarFunction(GraphScene):
         self.x_leftmost_tick = self.x_max+1
         self.y_bottom_tick = self.y_max+1  #do not want any ticks on the axes as of now
         X_TICKS_DISTANCE = self.x_axis_width/(self.x_max- self.x_min)
+        Y_TICKS_DISTANCE = self.y_axis_height/(self.y_max- self.y_min)
 
         function_notation = TexMobject("f(x) = y", tex_to_color_map={"f": YELLOW_D, "x": MAROON_C, "y": BLUE_E})
         function_notation.to_edge(UP)
@@ -106,11 +107,23 @@ class SingleVarFunction(GraphScene):
         self.wait(1)
 
         dot1 = Dot(color = MAROON_C)
-        dot1.shift(self.graph_origin+(X_TICKS_DISTANCE)*RIGHT)
+        dot1.shift(self.graph_origin + X_TICKS_DISTANCE*RIGHT)
         dot2 = Dot(color = MAROON_C)
-        dot2.shift(self.graph_origin+(X_TICKS_DISTANCE*2)*RIGHT)
+        dot2.shift(self.graph_origin + X_TICKS_DISTANCE*2*RIGHT)
         dot3 = Dot(color = MAROON_C)
-        dot3.shift(self.graph_origin+(X_TICKS_DISTANCE*3)*RIGHT)
+        dot3.shift(self.graph_origin + X_TICKS_DISTANCE*3*RIGHT)
+
+        dot1b = Dot(color = BLUE_E)
+        dot1b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(1)*UP)
+        dot2b = Dot(color = BLUE_E)
+        dot2b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(2)*UP)
+        dot3b = Dot(color = BLUE_E)
+        dot3b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(3)*UP)
+
+        dot1a= dot1.copy()
+        dot2a= dot2.copy()
+        dot3a= dot3.copy()
+
         dotlabel1 = TextMobject("1"); dotlabel1.scale(0.5)
         dotlabel1.shift(self.graph_origin+(X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
         dotlabel2 = TextMobject("2"); dotlabel2.scale(0.5)
@@ -118,7 +131,16 @@ class SingleVarFunction(GraphScene):
         dotlabel3 = TextMobject("3"); dotlabel3.scale(0.5)
         dotlabel3.shift(self.graph_origin+(3*X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
 
-        self.play(ShowCreation(dot1), ShowCreation(dot2), ShowCreation(dot3))
+        self.play(ShowCreation(dot1), ShowCreation(dot2), ShowCreation(dot3), ShowCreation(dot1a), ShowCreation(dot2a), ShowCreation(dot3a))
         self.play(ShowCreation(dotlabel1), ShowCreation(dotlabel2), ShowCreation(dotlabel3))
+
+        function_def = TexMobject(r"f(x) = sin(x)", tex_to_color_map={"f": YELLOW_D, "x": MAROON_C, "sin": BLUE_E})
+        function_def.to_edge(UP)
+        self.play(Transform(function_notation, function_def))
+
+        self.play(ApplyMethod(dot1a.set_color, YELLOW_D), ApplyMethod(dot2a.set_color, YELLOW_D), ApplyMethod(dot3a.set_color, YELLOW_D))
+        self.play(ApplyMethod(dot1a.shift, np.sin(1)*Y_TICKS_DISTANCE*UP), ShowCreation(dot1b))
+        self.play(ApplyMethod(dot2a.shift, np.sin(2)*Y_TICKS_DISTANCE*UP), ShowCreation(dot2b))
+        self.play(ApplyMethod(dot3a.shift, np.sin(3)*Y_TICKS_DISTANCE*UP), ShowCreation(dot3b))
 
         self.wait(3)
