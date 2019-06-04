@@ -23,4 +23,3 @@ class SetIntersection(Scene): # inheriting class Scene ...
         labelAB.scale(0.7)
         self.play(ShowCreation(labelAB))
         self.wait(3)
-        lalal

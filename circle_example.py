@@ -67,12 +67,7 @@ class FirstDomain(Scene):
             Eg: $f(x,y) = ( \sin(x), \cos(y) )$\\ \
             (i.e \textit{for all points x in the 2D plane, we calculate f(x,y)})"); more_explanation.scale(0.6);
         more_explanation.shift(2.3*DOWN)
-        #
-        #
+
+
         self.play(ShowCreation(more_explanation))
         self.wait(11)
-        #
-        # # title = TextMobject(r"$f: x \rightarrow f(x)$"); title.scale(1.25); title.move_to(3.2*UP)
-        # # self.play(ShowCreation(title))``
-        #
-        # self.wait(5)
