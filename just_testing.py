@@ -2,8 +2,9 @@ from manimlib.imports import *
 
 class TextTest(Scene):
     def construct(self):
-        test_text = TextMobject("Test text")
-        self.play(Write(test_text))
+        # test_text = TextMobject("Test text")
+        domain_text = TextMobject(r"Domain: $\mathbb{R}$\\Range: $\mathbb{R}$")
+        self.play(Write(domain_text))
         self.wait(2)
 
 class HexTest(Scene):

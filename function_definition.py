@@ -106,64 +106,58 @@ class SingleVarFunction(GraphScene):
         self.setup_axes(animate = True)
         self.wait(1)
 
-        dot1 = Dot(color = MAROON_C, radius = 0.07)
-        dot1.shift(self.graph_origin + X_TICKS_DISTANCE*RIGHT)
-        dot2 = dot1.copy()
-        dot2.shift(X_TICKS_DISTANCE*RIGHT)
-        dot3 = dot1.copy()
-        dot3.shift(X_TICKS_DISTANCE*2*RIGHT)
+        Dots = []
+        for i in range(6):
+            Dots.append(Dot(color = MAROON_C, radius = 0.07))
+            Dots[i].shift(self.graph_origin + ((i%3)+1)*X_TICKS_DISTANCE*RIGHT)
+        for i in range(6, 9):
+            Dots.append(Dot(color = BLUE_C, radius = 0.07))
+            Dots[i].shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(i-5)*UP)
 
-        dot1b = Dot(color = BLUE_C, radius = 0.07)
-        dot1b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(1)*UP)
-        dot2b = Dot(color = BLUE_E, radius = 0.07)
-        dot2b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(2)*UP)
-        dot3b = Dot(color = BLUE_D, radius = 0.07)
-        dot3b.shift(self.graph_origin + Y_TICKS_DISTANCE*np.sin(3)*UP)
+        DotLabels = []
+        for i in range(3):
+            DotLabels.append(TextMobject(str(i+1)))
+            DotLabels[i].scale(0.5)
+            DotLabels[i].shift(self.graph_origin+((i+1)*X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
 
-        dot1a= dot1.copy()
-        dot2a= dot2.copy()
-        dot3a= dot3.copy()
-
-        dotlabel1 = TextMobject("1"); dotlabel1.scale(0.5)
-        dotlabel1.shift(self.graph_origin+(X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
-        dotlabel2 = TextMobject("2"); dotlabel2.scale(0.5)
-        dotlabel2.shift(self.graph_origin+(2*X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
-        dotlabel3 = TextMobject("3"); dotlabel3.scale(0.5)
-        dotlabel3.shift(self.graph_origin+(3*X_TICKS_DISTANCE)*RIGHT+ 0.3*DOWN)
-
-        self.play(ShowCreation(dot1), ShowCreation(dot2), ShowCreation(dot3), ShowCreation(dot1a), ShowCreation(dot2a), ShowCreation(dot3a))
-        self.play(ShowCreation(dotlabel1), ShowCreation(dotlabel2), ShowCreation(dotlabel3))
+        #COMPACT_CODE_1
+        self.play(ShowCreation(Dots[0]), ShowCreation(Dots[1]), ShowCreation(Dots[2]), ShowCreation(Dots[3]), ShowCreation(Dots[4]), ShowCreation(Dots[5]))
+        self.play(ShowCreation(DotLabels[0]), ShowCreation(DotLabels[1]), ShowCreation(DotLabels[2]))
 
         function_def = TexMobject(r"f(x) = sin(x)", tex_to_color_map={"f": YELLOW_D, "x": MAROON_C, "sin": BLUE_E})
         function_def.to_edge(UP)
         self.play(Transform(function_notation, function_def))
+        #COMPACT_CODE_2
+        self.play(ApplyMethod(Dots[3].set_color, YELLOW_D), ApplyMethod(Dots[4].set_color, YELLOW_D), ApplyMethod(Dots[5].set_color, YELLOW_D))
+        for i in range(3,6):
+            self.play(ApplyMethod(Dots[i].shift, np.sin(i-2)*Y_TICKS_DISTANCE*UP) , ShowCreation(Dots[i+3]))
 
-        self.play(ApplyMethod(dot1a.set_color, YELLOW_D), ApplyMethod(dot2a.set_color, YELLOW_D), ApplyMethod(dot3a.set_color, YELLOW_D))
-        self.play(ApplyMethod(dot1a.shift, np.sin(1)*Y_TICKS_DISTANCE*UP), ShowCreation(dot1b))
-        self.play(ApplyMethod(dot2a.shift, np.sin(2)*Y_TICKS_DISTANCE*UP), ShowCreation(dot2b))
-        self.play(ApplyMethod(dot3a.shift, np.sin(3)*Y_TICKS_DISTANCE*UP), ShowCreation(dot3b))
+        x_line = Line(start = self.graph_origin + 5*LEFT*X_TICKS_DISTANCE, end = self.graph_origin + 5*RIGHT*X_TICKS_DISTANCE, color = MAROON_C)
+        y_line = Line(start = self.graph_origin + 1*UP*Y_TICKS_DISTANCE, end = self.graph_origin + 1*DOWN*Y_TICKS_DISTANCE, color = BLUE_D)
 
-        x_line = Line(start = self.graph_origin + 5*LEFT*X_TICKS_DISTANCE, end = self.graph_origin + 5*RIGHT*X_TICKS_DISTANCE)
-        y_line = Line(start = self.graph_origin + 1*UP*Y_TICKS_DISTANCE, end = self.graph_origin + 1*DOWN*Y_TICKS_DISTANCE)
-        dash1 = Rectangle(height = 0.01, width = 0.1)
-        dash2 = dash1.copy()
-        dash1.shift(self.graph_origin+ Y_TICKS_DISTANCE*UP)
-        dash2.shift(self.graph_origin+ Y_TICKS_DISTANCE*DOWN)
-        arrowtip1 = ArrowTip(color = WHITE)
-        arrowtip2 = ArrowTip(color = WHITE, start_angle = 0)
-        arrowtip1.scale(0.5)
-        arrowtip2.scale(0.5)
-        arrowtip1.shift(self.graph_origin+ 4.7*X_TICKS_DISTANCE*LEFT)
-        arrowtip2.shift(self.graph_origin+ 4.7*X_TICKS_DISTANCE*RIGHT)
+        scale_list = [1, -1]
+        Dashes = []
+        ArTips = []
+        ArAngles = [PI, 0]
+        for i in range(2):
+            Dashes.append(Rectangle(height = 0.01, width = 0.1, color = BLUE_D))
+            Dashes[i].shift(self.graph_origin + scale_list[i]*Y_TICKS_DISTANCE*UP)
+            ArTips.append(ArrowTip(color = MAROON_C, start_angle = ArAngles[i]))
+            ArTips[i].scale(0.5)
+            ArTips[i].shift(self.graph_origin+ scale_list[i]*4.7*X_TICKS_DISTANCE*LEFT)
 
         func_graph = self.get_graph(self.sin_graph, YELLOW_E)
-        self.play(ShowCreation(x_line), ShowCreation(arrowtip1), ShowCreation(arrowtip2))
+        self.play(ShowCreation(x_line), ShowCreation(ArTips[0]), ShowCreation(ArTips[1]))
         self.wait(1)
         self.play(ShowCreation(func_graph), ShowCreation(y_line))
-        self.play(ShowCreation(dash1), ShowCreation(dash2))
+        #COMPACT_CODE_3
+        self.play(ShowCreation(Dashes[0]), ShowCreation(Dashes[1]))
         self.wait(2)
-        self.play(FadeOut(dot1), FadeOut(dot2),FadeOut(dot3), FadeOut(dot1a),FadeOut(dot2a), FadeOut(dot3a),FadeOut(dot1b), FadeOut(dot2b),FadeOut(dot3b), FadeOut(dotlabel1), FadeOut(dotlabel2),FadeOut(dotlabel3)) #, dot3, dot1a, dot2a, dot3a, dot1b, dot2b, dot3b))
+        #COMPACT_CODE_4
+        self.play(FadeOut(Dots[0]), FadeOut(Dots[1]),FadeOut(Dots[2]), FadeOut(Dots[3]),FadeOut(Dots[4]), FadeOut(Dots[5]),FadeOut(Dots[6]), FadeOut(Dots[7]),FadeOut(Dots[8]), FadeOut(DotLabels[0]), FadeOut(DotLabels[1]), FadeOut(DotLabels[2]) )
         self.wait(2)
+
+        # domain_text = TextTest(r"Domain: $\mathbb{R}$\\Range: $\mathbb{R}$")
 
     def sin_graph(self,x):
         return np.sin(x)
