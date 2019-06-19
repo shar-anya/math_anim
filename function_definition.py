@@ -119,11 +119,18 @@ class SingleVarFunction(GraphScene):
         dotlabel_gp = VGroup(*DotLabels)
 
         domain_text1 = TextMobject(r"Domain", tex_to_color_map={"Domain": MAROON_C})
-        domain_text1.scale(0.6)
         range_text1 = TextMobject(r"Range", tex_to_color_map=  {"Range": BLUE_E})
-        range_text1.scale(0.6)
         domain_text1.shift(self.graph_origin + 1.55*RIGHT + 0.7*DOWN)
         range_text1.shift(self.graph_origin + 0.8*LEFT + 0.4*UP)
+        domain_text1.scale(0.6)
+        range_text1.scale(0.6)
+
+        domain_text2 = TextMobject(r"Domain : $\mathbb{R}$", tex_to_color_map={"Domain": MAROON_C})
+        range_text2 = TextMobject(r"Range : [-1,1]", tex_to_color_map={"Range": MAROON_C})
+        domain_text2.shift(self.graph_origin + 1.6*RIGHT + 0.7*DOWN)
+        range_text2.shift(self.graph_origin + 1.4*LEFT + 0.4*UP)
+        domain_text2.scale(0.7)
+        range_text2.scale(0.7)
 
         x_line = Line(start = self.graph_origin + 5*LEFT*X_TICKS_DISTANCE, end = self.graph_origin + 5*RIGHT*X_TICKS_DISTANCE)
         y_line = Line(start = self.graph_origin + 1*UP*Y_TICKS_DISTANCE, end = self.graph_origin + 1*DOWN*Y_TICKS_DISTANCE)
@@ -136,7 +143,7 @@ class SingleVarFunction(GraphScene):
         for i in range(2):
             Dashes.append(Rectangle(height = 0.01, width = 0.1))
             Dashes[i].shift(self.graph_origin + scale_list[i]*Y_TICKS_DISTANCE*UP)
-            ArTips.append(ArrowTip(start_angle = ArAngles[i]))
+            ArTips.append(ArrowTip(color = WHITE, start_angle = ArAngles[i]))
             ArTips[i].scale(0.5)
             ArTips[i].shift(self.graph_origin+ scale_list[i]*4.7*X_TICKS_DISTANCE*LEFT)
 
@@ -148,25 +155,35 @@ class SingleVarFunction(GraphScene):
 
         self.play(ShowCreation(dots_gp1))
         self.play(ShowCreation(dotlabel_gp))
-        self.wait(1.5)
+        self.wait(0.5)
         self.play(Write(domain_text1))
+        self.wait(1.5)
         self.play(Transform(function_notation, function_def))
         self.play(ApplyMethod(dots_gp2.set_color, YELLOW_D))
         #SHIFTING YELLOW DOTS UP AND SHOWING RANGE DOTS
         for i in range(3,6):
             self.play(ApplyMethod(Dots[i].shift, np.sin(i-2)*Y_TICKS_DISTANCE*UP) , ShowCreation(Dots[i+3]))
-        self.wait(1.5)
+        self.wait(0.5)
         self.play(Write(range_text1))
-        self.wait(1.5)
+        self.wait(2)
 
         func_graph = self.get_graph(self.sin_graph, YELLOW_E)
         self.play(Write(x_line), ShowCreation(ArTips[0]), ShowCreation(ArTips[1]))
-        self.wait(1)
+        self.wait(0.5)
+        self.play(Transform(domain_text1, domain_text2))
+        self.wait(1.5)
+
         self.play(ShowCreation(func_graph), Write(y_line))
         self.play(ShowCreation(VGroup(*Dashes)))
+        self.wait(0.5)
+        self.play(Transform(range_text1, range_text2))
+        self.wait(1.5)
+
+        self.play(FadeOut(dots_gp1), FadeOut(dots_gp2), FadeOut(VGroup(*Dots[6:9])), FadeOut(dotlabel_gp))
         self.wait(2)
-        self.play(FadeOut(dots_gp1), FadeOut(dots_gp2), FadeOut(dotlabel_gp))
-        self.wait(2)
+        self.remove(domain_text1, range_text1)
+        self.play(ApplyMethod(domain_text2.move_to, self.graph_origin+3*Y_TICKS_DISTANCE*UP+2.2*LEFT), ApplyMethod(range_text2.move_to, self.graph_origin+2.4*Y_TICKS_DISTANCE*UP+2.1*LEFT))
+        self.wait(3)
 
     def sin_graph(self,x):
         return np.sin(x)
