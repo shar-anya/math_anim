@@ -3,20 +3,33 @@ import numpy as np
 
 class Function_General(Scene):
     def construct(self):
-        #TITLE DISPLAY
+        #TITLE
         title = TextMobject("What is a function?")
         title.scale(1.3)
         title.to_edge(UP)
-        self.play(ShowCreation(title))
-        self.wait(1)
-
-        #DOMAIN SET DISPLAY
+        #FUNCTION NOTATION
+        function_notation = TexMobject("f(x) = y", tex_to_color_map={"f": YELLOW_D, "x": MAROON_C, "y": BLUE_E})
+        function_notation.to_edge(UP)
+        function_notation.shift(0.5*DOWN)
+        function_notation.scale(1.7)
+        #TEXT FOR DOMAIN AND RANGE SETS
+        domain_set_text = TextMobject(r"some Set $A$")
+        domain_set_text.shift(3.5*LEFT+2.08*DOWN)
+        domain_set_text.scale(0.8)
+        domain_set_text1 = TextMobject("of shapes")
+        domain_set_text1.shift(3.5*LEFT+2.6*DOWN)
+        domain_set_text1.scale(0.8)
+        domain_set_transform_text = TextMobject("Domain"); domain_set_transform_text.shift(3.5*LEFT+2.3*DOWN)
+        range_set_text= TextMobject("Range")
+        range_set_text.shift(3.5*RIGHT+2.3*DOWN)
+        #DOMAIN {}
         domain_set = TextMobject(r"\{$\hspace{7pt}$\}")
         domain_set.scale(4.5)
         domain_set.shift(3.5*LEFT+0.5*DOWN)
-        domain_set_text = TextMobject("some Set $A$")
-        domain_set_text.shift(3.5*LEFT+2.3*DOWN)
-
+        #RANGE {}
+        range_set = domain_set.copy()
+        range_set.move_to(3.5*RIGHT+0.5*DOWN)
+        #CREATE SET OF DOMAIN SHAPES
         domain_shapes = []
         domain_shapes.append(Circle(radius = 0.25, color = MAROON_C, fill_color = MAROON_C, fill_opacity = 1))
         domain_shapes.append(Square(side_length = 0.4, color = MAROON_C, fill_color = MAROON_C, fill_opacity = 1))
@@ -25,31 +38,32 @@ class Function_General(Scene):
         domain_shapes[1].shift(4*LEFT+0.7*DOWN)
         domain_shapes[2].shift(3.1*LEFT+1.2*DOWN)
         domain_shapes[2].scale(0.27)
-
-        domaingp = VGroup(*domain_shapes)
-        self.play(ShowCreation(domain_set))
-        self.play(ShowCreation(domaingp))
-        self.play(ShowCreation(domain_set_text))
-        self.wait(1)
-
-        function_notation = TexMobject("f(x) = y", tex_to_color_map={"x": MAROON_C, "y": BLUE_E})
-        function_notation.to_edge(UP)
-        function_notation.shift(0.5*DOWN)
-        function_notation.scale(1.7)
-
-        self.play(ReplacementTransform(title, function_notation))
-        self.wait(1)
-
+        domaingp = VGroup(*domain_shapes) #Grouping Domain set objects
+        #CREATE SET OF INTERMEDIATE SHAPES
         mid_shapes = []
         for i in range(3):
             mid_shapes.append(domain_shapes[i].copy())
-        self.add(mid_shapes[0], mid_shapes[1], mid_shapes[2])
-
+        #CREATE SET OF RANGE SHAPES
+        range_shapes = []
+        #TUPLES with constants for moving shapes
         midmove = (0.55*LEFT+2.72*UP, 0.55*LEFT+2.72*UP, 0.55*LEFT+2.76*UP)
         rangeside = (1.95*RIGHT, 1.95*RIGHT+0.07*DOWN, 1.95*RIGHT+0.07*DOWN)
         rangemove = (3.5*RIGHT+0.1*UP, 4.2*RIGHT+0.9*DOWN, 3*RIGHT+1*DOWN)
         scale_list = (1.4, 1.6, 1.58)
-        range_shapes = []
+
+        #ANIMATION STARTS HERE
+        self.play(Write(title))
+        self.wait(1)
+
+        self.play(ShowCreation(domain_set))
+        self.play(ShowCreation(domaingp, run_time = 2))
+        self.play(Write(domain_set_text))
+        self.play(Write(domain_set_text1))
+        self.wait(1)
+
+        self.play(ReplacementTransform(title, function_notation))
+        self.wait(1)
+        self.add(mid_shapes[0], mid_shapes[1], mid_shapes[2])
 
         for i in range(3):
             self.play(ApplyMethod(mid_shapes[i].move_to, midmove[i]))
@@ -61,20 +75,14 @@ class Function_General(Scene):
             self.play(FadeOut(mid_shapes[i]), FadeIn(range_shapes[i]))
             self.play(ApplyMethod(range_shapes[i].move_to, rangemove[i]))
             self.wait(1)
-
-        range_set = domain_set.copy()
-        range_set.move_to(3.5*RIGHT+0.5*DOWN)
-        self.play(ShowCreation(range_set))
-
-        range_set_text= TextMobject("Range")
-        range_set_text.shift(3.5*RIGHT+2.3*DOWN)
-        self.play(ShowCreation(range_set_text))
-        domain_set_transform_text = TextMobject("Domain"); domain_set_transform_text.shift(3.5*LEFT+2.3*DOWN)
-        self.play(Transform(domain_set_text, domain_set_transform_text))
-
-        self.wait(2)
-        self.clear()
-        self.wait(1)
+        #
+        # self.play(ShowCreation(range_set))
+        # self.play(ShowCreation(range_set_text))
+        # self.play(Transform(domain_set_text, domain_set_transform_text))
+        #
+        # self.wait(2)
+        # self.clear()
+        # self.wait(1)
 
 class SingleVarFunction(GraphScene):
     CONFIG = {
@@ -159,11 +167,13 @@ class SingleVarFunction(GraphScene):
         self.play(Write(domain_text1))
         self.wait(1.5)
         self.play(Transform(function_notation, function_def))
+        self.wait(0.7)
         self.play(ApplyMethod(dots_gp2.set_color, YELLOW_D))
         #SHIFTING YELLOW DOTS UP AND SHOWING RANGE DOTS
         for i in range(3,6):
             self.play(ApplyMethod(Dots[i].shift, np.sin(i-2)*Y_TICKS_DISTANCE*UP) , ShowCreation(Dots[i+3]))
-        self.wait(0.5)
+            self.wait(0.3)
+        self.wait(0.2)
         self.play(Write(range_text1))
         self.wait(2)
 
