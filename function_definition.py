@@ -12,16 +12,30 @@ class Function_General(Scene):
         function_notation.to_edge(UP)
         function_notation.shift(0.5*DOWN)
         function_notation.scale(1.7)
-        #TEXT FOR DOMAIN AND RANGE SETS
-        domain_set_text = TextMobject(r"some Set $A$")
-        domain_set_text.shift(3.5*LEFT+2.08*DOWN)
-        domain_set_text.scale(0.8)
-        domain_set_text1 = TextMobject("of shapes")
-        domain_set_text1.shift(3.5*LEFT+2.6*DOWN)
+        #TEXT FOR DOMAIN AND RANGE SETS and MID
+        domain_set_text1 = TextMobject(r"Some set $A$")
+        domain_set_text1.shift(3.5*LEFT+2.08*DOWN)
         domain_set_text1.scale(0.8)
+        domain_set_text2 = TextMobject("of shapes")
+        domain_set_text2.shift(3.5*LEFT+2.6*DOWN)
+        domain_set_text2.scale(0.8)
         domain_set_transform_text = TextMobject("Domain"); domain_set_transform_text.shift(3.5*LEFT+2.3*DOWN)
-        range_set_text= TextMobject("Range")
-        range_set_text.shift(3.5*RIGHT+2.3*DOWN)
+
+        mid_text = TexMobject("\\text{Each element of $A$ undergoes a unique transformation }" ,"{f}")
+        mid_text.set_color_by_tex_to_color_map({"{f}": YELLOW_D})
+        mid_text.scale(0.7)
+        mid_text.to_edge(DOWN)
+        mid_text.shift(0.25*DOWN)
+
+        range_set_text1 = TextMobject("Corresponding")
+        range_set_text1.shift(3.5*RIGHT+2.08*DOWN)
+        range_set_text1.scale(0.8)
+        range_set_text2 = TextMobject("set $B$")
+        range_set_text2.shift(3.5*RIGHT+2.6*DOWN)
+        range_set_text2.scale(0.8)
+
+        range_set_transform_text= TextMobject("Range")
+        range_set_transform_text.shift(3.5*RIGHT+2.3*DOWN)
         #DOMAIN {}
         domain_set = TextMobject(r"\{$\hspace{7pt}$\}")
         domain_set.scale(4.5)
@@ -50,15 +64,23 @@ class Function_General(Scene):
         rangeside = (1.95*RIGHT, 1.95*RIGHT+0.07*DOWN, 1.95*RIGHT+0.07*DOWN)
         rangemove = (3.5*RIGHT+0.1*UP, 4.2*RIGHT+0.9*DOWN, 3*RIGHT+1*DOWN)
         scale_list = (1.4, 1.6, 1.58)
+        #Define curved arrow
+        curvearrow = CurvedArrow(start_point = 1.7*LEFT, end_point = 1.7*RIGHT, angle = -np.pi/4)
+        curvearrow.scale(0.5)
+        curvearrow.shift(0.5*DOWN)
+        # Grouping initial domain and range texts
+        domain_set_text_gp = VGroup(domain_set_text1, domain_set_text2)
+        range_set_text_gp = VGroup(range_set_text1, range_set_text2)
 
+        #######################################################################
         #ANIMATION STARTS HERE
         self.play(Write(title))
         self.wait(1)
 
         self.play(ShowCreation(domain_set))
         self.play(ShowCreation(domaingp, run_time = 2))
-        self.play(Write(domain_set_text))
         self.play(Write(domain_set_text1))
+        self.play(Write(domain_set_text2))
         self.wait(1)
 
         self.play(ReplacementTransform(title, function_notation))
@@ -74,15 +96,24 @@ class Function_General(Scene):
             self.wait(0.5)
             self.play(FadeOut(mid_shapes[i]), FadeIn(range_shapes[i]))
             self.play(ApplyMethod(range_shapes[i].move_to, rangemove[i]))
-            self.wait(1)
-        #
-        # self.play(ShowCreation(range_set))
-        # self.play(ShowCreation(range_set_text))
-        # self.play(Transform(domain_set_text, domain_set_transform_text))
-        #
-        # self.wait(2)
-        # self.clear()
-        # self.wait(1)
+            if i is 0:
+                self.play(FadeIn(mid_text))
+                self.wait(0.5)
+            else:
+                self.wait(1)
+
+        self.play(ShowCreation(range_set), FadeOut(mid_text, run_time = 0.8))
+
+        self.play(Write(range_set_text1))
+        self.play(Write(range_set_text2))
+        self.wait(1.5)
+        self.play(Transform(domain_set_text_gp, domain_set_transform_text))
+        self.play(ShowCreation(curvearrow))
+        self.play(Transform(range_set_text_gp, range_set_transform_text))
+
+        self.wait(2.5)
+        self.clear()
+        self.wait(1)
 
 class SingleVarFunction(GraphScene):
     CONFIG = {
@@ -142,6 +173,7 @@ class SingleVarFunction(GraphScene):
 
         x_line = Line(start = self.graph_origin + 5*LEFT*X_TICKS_DISTANCE, end = self.graph_origin + 5*RIGHT*X_TICKS_DISTANCE)
         y_line = Line(start = self.graph_origin + 1*UP*Y_TICKS_DISTANCE, end = self.graph_origin + 1*DOWN*Y_TICKS_DISTANCE)
+        func_graph = self.get_graph(self.sin_graph, YELLOW_E)
 
         scale_list = [1, -1]
         Dashes = []
@@ -177,7 +209,6 @@ class SingleVarFunction(GraphScene):
         self.play(Write(range_text1))
         self.wait(2)
 
-        func_graph = self.get_graph(self.sin_graph, YELLOW_E)
         self.play(Write(x_line), ShowCreation(ArTips[0]), ShowCreation(ArTips[1]))
         self.wait(0.5)
         self.play(Transform(domain_text1, domain_text2))
