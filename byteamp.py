@@ -23,13 +23,13 @@ class ByteAmp1(GraphScene):
 
     def construct(self):
         # DEFINITIONS
-        Title = TextMobject("ByteAmp", tex_to_color_map={"Amp" : BLUE_C})
+        Title = TexMobject("\\text{Byte}", "\\text{Amp}")
+        Title.set_color_by_tex_to_color_map({"{Byte}": BLUE_C, "{Amp}": YELLOW_D})
         # Graph Settings
         self.x_leftmost_tick = self.x_max+1
         self.y_bottom_tick = self.y_max+1  #do not want any ticks on the axes as of now
         X_TICKS_DISTANCE = self.x_axis_width/(self.x_max- self.x_min)
         Y_TICKS_DISTANCE = self.y_axis_height/(self.y_max- self.y_min)
-        # sine wave
         # Creation of the digital signal ('._.)
         digital_signal = []
         part1 = Line(start = 2*LEFT, end = 2*LEFT+0.5*UP)
@@ -50,19 +50,22 @@ class ByteAmp1(GraphScene):
         part2 = Line(start = cor[0]+cor[1], end = cor[0])
         digital_signal.append(part2)
         # [item.set_color(WH) for item in digital_signal]
-        dig_group = VGroup(*digital_signal)
+        digital_group = VGroup(*digital_signal)
+
         # ANIMATION BEGINS HERE
         self.setup_axes()
-        func_graph = self.get_graph(self.sin_graph, BLUE_C)
-        self.play(ShowCreation(func_graph, run_time = 2.5))
-
-        self.play(FadeOut(func_graph, run_time = 0.25) , ShowCreation(dig_group, run_time = 2.5))
+        func_graph1 = self.get_graph(self.sin_graph, BLUE_C)
+        self.play(ShowCreation(func_graph1, run_time = 2.5))
+        self.play(FadeOut(func_graph1, run_time = 0.25) , ShowCreation(digital_group, run_time = 2.5))
         self.graph_origin = 4*RIGHT
         self.setup_axes()
-        func_graph = self.get_graph(self.sin_graph, BLUE_C)
-        self.play(FadeOut(dig_group, run_time = 0.25), ShowCreation(func_graph, run_time = 2.5))
-        self.play(FadeOut(func_graph))
+        func_graph2 = self.get_graph(self.sin_graph, BLUE_C)
+        self.play(FadeOut(digital_group, run_time = 0.25), ShowCreation(func_graph2, run_time = 2.5))
+        self.play(FadeOut(func_graph2))
 
-        self.play(Write(Title, run_time = 2))
+        Bigp = VGroup(func_graph1, digital_group, func_graph2)
+        self.play(FadeIn(Bigp))
+
+        self.play(Transform(Bigp, Title))
         self.wait(1)
         # self.add(TextMobject("siudj"))
