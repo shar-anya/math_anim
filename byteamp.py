@@ -23,8 +23,8 @@ class ByteAmp1(GraphScene):
 
     def construct(self):
         # DEFINITIONS
-        Title = TexMobject("\\text{Byte}", "\\text{Amp}")
-        Title.set_color_by_tex_to_color_map({"{Byte}": BLUE, "{Amp}": YELLOW})
+        Title = TexMobject("\\text{byte}", "\\text{Amp}")
+        Title.set_color_by_tex_to_color_map({"{Byte}": BLUE, "{Amp}": BYTEAMP})
         Title.scale(1.7)
         # Graph Settings
         self.x_leftmost_tick = self.x_max+1
@@ -57,15 +57,15 @@ class ByteAmp1(GraphScene):
         part2 = Line(start = cor[0]+cor[1], end = cor[0])
         # ANIMATION BEGINS HERE
         self.setup_axes()
-        func_graph1 = self.get_graph(self.sin_graph, BLUE)
+        func_graph1 = self.get_graph(self.sin_graph, BYTEAMP)
         self.graph_origin = 4*RIGHT
         self.setup_axes()
-        func_graph2 = self.get_graph(self.sin_graph, YELLOW)
+        func_graph2 = self.get_graph(self.sin_graph, BYTEAMP)
 
         self.play(ShowCreation(func_graph1, run_time = 1.5))
         self.play(FadeOut(func_graph1, run_time = 2) , ShowCreation(digital_group, run_time = 1.5))
-        self.play(FadeOut(digital_group, run_time = 2), ShowCreation(func_graph2, run_time = 1))
-        self.play(FadeOut(func_graph2, run_time = 1))
+        self.play(FadeOut(digital_group, run_time = 2), ShowCreation(func_graph2, run_time = 1.5))
+        self.play(FadeOut(func_graph2, run_time = 0.5))
 
         Bigp = VGroup(func_graph1, digital_group, func_graph2)
         self.play(FadeIn(Bigp))
