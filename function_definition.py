@@ -173,7 +173,6 @@ class SingleVarFunction(GraphScene):
 
         x_line = Line(start = self.graph_origin + 5*LEFT*X_TICKS_DISTANCE, end = self.graph_origin + 5*RIGHT*X_TICKS_DISTANCE)
         y_line = Line(start = self.graph_origin + 1*UP*Y_TICKS_DISTANCE, end = self.graph_origin + 1*DOWN*Y_TICKS_DISTANCE)
-        func_graph = self.get_graph(self.sin_graph, YELLOW_E)
 
         scale_list = [1, -1]
         Dashes = []
@@ -187,10 +186,19 @@ class SingleVarFunction(GraphScene):
             ArTips[i].scale(0.5)
             ArTips[i].shift(self.graph_origin+ scale_list[i]*4.7*X_TICKS_DISTANCE*LEFT)
 
+        single_text = [TexMobject("{f(x) = \\sin(x)}", "\\text{ is an \\textit{example} of a \\textbf{Function in One Variable}}",  tex_to_color_map={"Function in One Variable": YELLOW_D}),
+                        TexMobject("\\text{as its input is the field of Real numbers, $x \\in \\mathbb{R}$ (a single variable)}"),
+                        TexMobject("\\text{and its output is the set of real numbers $y$ ranging from -1 to 1.}")]
+        [item.to_edge(UP) for item in single_text]
+        [item.scale(0.5) for item in single_text]
+        single_text[1].shift(0.4*DOWN)
+        single_text[2].shift(0.8*DOWN)
+
         #ANIMATION BEGINS HERE
         self.play(Write(function_notation))
         self.wait(1)
         self.setup_axes(animate = True)
+        func_graph = self.get_graph(self.sin_graph, YELLOW_E)
         self.wait(1)
 
         self.play(ShowCreation(dots_gp1))
@@ -224,7 +232,16 @@ class SingleVarFunction(GraphScene):
         self.wait(2)
         self.remove(domain_text1, range_text1)
         self.play(ApplyMethod(domain_text2.move_to, self.graph_origin+3*Y_TICKS_DISTANCE*UP+2.2*LEFT), ApplyMethod(range_text2.move_to, self.graph_origin+2.4*Y_TICKS_DISTANCE*UP+2.1*LEFT))
-        self.wait(3)
+        self.wait(1)
+
+        self.play(ApplyMethod(function_notation.move_to, self.graph_origin+3.6*Y_TICKS_DISTANCE*UP+2*LEFT, run_time = 0.5))
+        self.play(ApplyMethod(function_notation.scale, 0.7))
+        self.wait(1)
+
+        self.play(Write(single_text[0], run_time = 2))
+        self.play(Write(single_text[1], run_time = 2))
+        self.play(Write(single_text[2], run_time = 2))
+        self.wait(4)
 
     def sin_graph(self,x):
         return np.sin(x)
