@@ -15,7 +15,7 @@ class WriteDE(Scene):
         TexMobject("{\\frac{dy}{dt}}" , "{=}" , "{3}" , "{x}" , "{+}" , "{3}" , "{y}"),
         ]
         text = self.text
-        self.text[0].shift(1.5*UP)
+        self.text[0].shift(1.3*UP)
         self.text[0].scale(0.7)
         self.play(ShowCreation(self.text[0]))
 
@@ -55,6 +55,27 @@ class WriteDE(Scene):
 
         text.append(TextMobject(r"$\begin{bmatrix} 5 & 1 \\ 3 & 3 \end{bmatrix}$")) # Matrix A
         text[-1].to_edge(UP)
+        text[-1].shift(0.5*RIGHT)
         text.append(TextMobject(r"$\begin{bmatrix} x \\ y \end{bmatrix}$")) # Matrix [x \\ y]
         text[-1].to_edge(UP)
-        text[-1].shift(1.2*RIGHT)
+        text[-1].shift(1.6*RIGHT)
+
+        matrixnumbers = VGroup(*text[9:13])
+        vectorvars = VGroup(*text[5:9])
+
+        self.play(Transform(matrixnumbers , text[13], run_time = 2))
+        self.play(Transform(vectorvars, text[14], run_time = 2))
+
+        text.append(TextMobject("$=$"))
+        text[-1].shift(text[13].get_center()+ 1*LEFT)
+        self.play(ShowCreation(text[-1]))
+
+        text.append(text[1][0].copy())
+        text.append(text[2][0].copy())
+        self.add(*text[-2:])
+        diffvec = VGroup(*text[-2:])
+
+        text.append(TexMobject(r"{\frac{d}{dt}}", r"{\begin{bmatrix} x \\ y \end{bmatrix}}")) # Matrix [x \\ y]
+        text[-1].to_edge(UP)
+        text[-1].shift(1.5*LEFT)
+        self.play(Transform(diffvec, text[-1]))
