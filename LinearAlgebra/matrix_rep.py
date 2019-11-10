@@ -33,10 +33,6 @@ class WriteDE(Scene):
         text[-1].scale(0.7)
         text[-1].shift(text[0].get_center())
 
-        # self.wait(2)
-        # self.play(Transform(text[0], text[-1]))
-        # self.wait(2)
-
         text.append(TextMobject("Matrix form")) #4
         text[-1].scale(0.7)
         text[-1].to_edge(UP)
