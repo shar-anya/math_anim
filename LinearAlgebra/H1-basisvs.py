@@ -24,8 +24,11 @@ class Scene1(LinearTransformationScene):
         labels = self.get_basis_vector_labels()
         self.add(ihat, jhat)
         self.add(*labels)
-        self.introtext()
+        self.write_stuff()
+        self.show_vector_as_basis_sum()
+        self.wait(2)
 
+    def show_vector_as_basis_sum(self):
         for i in range(len(VECTORS)):
             v = self.add_vector(VECTORS[i], stroke_width = 4)
             linei = Line(start = ORIGIN, end = VECTORS[i][0]*RIGHT)
@@ -39,15 +42,12 @@ class Scene1(LinearTransformationScene):
                                            r"\imath" + "+" +
                                            str(VECTORS[i][1]) +
                                            r"\jmath", at_tip = True)
-            # coords = self.write_vector_coordinates(v, color = GREY)
             self.play(ShowCreation(vlabel))
             bunch = VGroup(v, linei, linej, vlabel)
             self.play(FadeOut(bunch))
             self.wait(0.3)
 
-        self.wait(2)
-
-    def introtext(self):
+    def write_stuff(self):
         self.text = []
         text = self.text
 
@@ -164,10 +164,76 @@ class Scene2(LinearTransformationScene):
         )
         self.remove(*vectors)
 
-class Scene3(LinearTransformationScene):
+class Scene3(LinearTransformationScene, MovingCameraScene):
     '''
     Illustrates basis vectors for transformed R^2
     '''
 
     def construct(self):
-        pass
+        self.setup()
+        self.linear_transform = [[2,1], [1,2]]
+        self.write_stuff()
+        self.apply_matrix(self.linear_transform)
+        self.wait(1)
+        self.play(FadeOut(VGroup(*self.text[0:2])))
+
+        self.play(ApplyMethod(self.camera_frame.scale , 2.5))
+        self.show_vector_as_basis_sum()
+        self.play(ApplyMethod(self.camera_frame.scale , 0.4))
+        self.play(Write(self.text[2]))
+        self.wait(2)
+        self.play(FadeOut(self.text[2]))
+
+
+    def setup(self):
+        LinearTransformationScene.setup(self)
+        MovingCameraScene.setup(self)
+
+    def write_stuff(self):
+        self.text = []
+        text = self.text
+        text.append(TextMobject("Consider the linear transformation"))
+        text.append(Matrix(self.linear_transform))
+        text.append(TextMobject("Coordinates of vectors in terms of new basis remain the same").add_background_rectangle())
+
+        text[0].add_background_rectangle()
+        text[1].add_background_rectangle()
+        text01 = VGroup(*text[0:2])
+        text01.scale(0.8)
+        text[1].next_to(text[0],RIGHT)
+        text01.to_edge(UP)
+        text01.shift(LEFT)
+
+        text[2].to_edge(UP)
+        text[2].scale(0.8)
+        self.play(Write(text01))
+        self.wait(1)
+
+    def show_vector_as_basis_sum(self):
+        for i in range(len(VECTORS)):
+            v1 = Vector(VECTORS[i])
+            v2 = Vector(
+                np.dot(np.array(self.linear_transform).transpose(), VECTORS[i]),
+                color = YELLOW,
+                stroke_width = 4,
+            )
+            self.add_vector(v2)
+            self.wait(0.5)
+            # v = self.add_vector(VECTORS[i], stroke_width = 4)
+            linei = Line(start = ORIGIN, end = (self.linear_transform[0][0]*RIGHT + self.linear_transform[0][1]*UP)*VECTORS[i][0], stroke_width = 4)
+            linei.set_color(GREEN)
+            linej = Line(start = ORIGIN, end = (self.linear_transform[1][0]*RIGHT + self.linear_transform[1][1]*UP)*VECTORS[i][1], stroke_width = 4)
+            linej.shift(linei.get_end())
+            linej.set_color(RED_C)
+            self.play(ShowCreation(linei))
+            self.play(ShowCreation(linej))
+            vlabel = self.get_vector_label(v2, str(VECTORS[i][0]) +
+                                           r"\imath_1" + "+" +
+                                           str(VECTORS[i][1]) +
+                                           r"\jmath_1", at_tip = True)
+            vlabel.scale(1.5)
+            self.play(ShowCreation(vlabel))
+            self.wait(1.5)
+            bunch = VGroup(v2, linei, linej, vlabel)
+            self.play(FadeOut(bunch))
+            self.wait(0.3)
