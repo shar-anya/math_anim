@@ -72,13 +72,6 @@ class Scene2(LinearTransformationScene):
         "start_color" : PINK,
         "end_color" : BLUE_E,
     }
-    def lock_in_faded_grid(self, dimness=0.7, axes_dimness=0.5):
-        plane = self.add_plane()
-        axes = plane.get_axes()
-        plane.fade(dimness)
-        axes.set_color(WHITE)
-        axes.fade(axes_dimness)
-        self.add(axes)
 
     def get_vectors(self):
         return [
@@ -86,6 +79,14 @@ class Scene2(LinearTransformationScene):
             for x in np.arange(-int(FRAME_X_RADIUS), int(FRAME_X_RADIUS)+0.5, 0.5)
             for y in np.arange(-int(FRAME_Y_RADIUS), int(FRAME_Y_RADIUS)+0.5, 0.5)
         ]
+
+    def lock_in_faded_grid(self, dimness=0.7, axes_dimness=0.5):
+        plane = self.add_plane()
+        axes = plane.get_axes()
+        plane.fade(dimness)
+        axes.set_color(WHITE)
+        axes.fade(axes_dimness)
+        self.add(axes)
 
     def construct(self):
         self.lock_in_faded_grid()
@@ -237,3 +238,57 @@ class Scene3(LinearTransformationScene, MovingCameraScene):
             bunch = VGroup(v2, linei, linej, vlabel)
             self.play(FadeOut(bunch))
             self.wait(0.3)
+
+class TransformManyVectors(LinearTransformationScene, MovingCameraScene):
+    CONFIG = {
+        "transposed_matrix" : [[2, 1], [1, 2]],
+        "use_dots" : True,
+        "include_background_plane": False,
+    }
+    def setup(self):
+        LinearTransformationScene.setup(self)
+        MovingCameraScene.setup(self)
+
+    def construct(self):
+        self.setup()
+        self.wait(1.5)
+        vectors = VGroup(*[
+            Vector([x, y], stroke_width = 3)
+            for x in np.arange(-int(FRAME_X_RADIUS), int(FRAME_X_RADIUS)+0.5)
+            for y in np.arange(-int(FRAME_Y_RADIUS), int(FRAME_Y_RADIUS)+0.5)
+        ])
+        vectors.set_submobject_colors_by_gradient(BLUE_C, MAROON_E)
+        self.play(ShowCreation(vectors, lag_ratio = 0.5))
+        self.wait(0.5)
+        self.apply_matrix(self.transposed_matrix)
+
+        t_matrix = self.transposed_matrix
+        transformed_vectors = VGroup(*[
+            Vector(
+                np.dot(np.array(t_matrix).transpose(), v.get_end()[:2]),
+                color = v.get_color(), stroke_width = 3
+            )
+            for v in vectors.split()
+        ])
+        self.wait()
+        self.play(Transform(
+        vectors, transformed_vectors,
+        run_time = 3,
+        path_arc = -np.pi/2
+        ))
+        if self.use_dots:
+            self.play(Transform(
+                vectors, self.vectors_to_dots(vectors),
+                run_time = 3,
+                lag_ratio = 0.5
+            ))
+            transformed_vectors = self.vectors_to_dots(transformed_vectors)
+            self.wait()
+        self.wait(3)
+
+
+    def vectors_to_dots(self, vectors):
+        return VGroup(*[
+            Dot(v.get_end(), color = v.get_color())
+            for v in vectors.split()
+        ])
