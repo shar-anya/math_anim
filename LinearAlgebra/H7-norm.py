@@ -11,7 +11,7 @@ class PlayNorm(MovingCameraScene, Axes):
         plane = NumberPlane(axis_config = {"stroke_color": LIGHT_GREY}, )
         axes = Axes()
         self.add(plane)
-        # self.write_stuff()
+        self.write_stuff()
         self.wait(1)
 
         self.play(ApplyMethod(self.camera_frame.scale , 0.4))
@@ -20,6 +20,7 @@ class PlayNorm(MovingCameraScene, Axes):
         colors = color_gradient([MAROON, YELLOW_C], n+1) #12 values
         zoomtext = []
         runtimes = np.linspace(1.4, 0.2, n)
+        extravar = None
         for i in np.arange(0, 10):
             weird = r"{\norm{x}_{"+str(i+1)+"}}"
             zoomtext.append(TexMobject(weird, "{=}", "{1}"))
@@ -32,11 +33,9 @@ class PlayNorm(MovingCameraScene, Axes):
                 self.play(Transform(curves[-2],curves[-1]), ReplacementTransform(zoomtext[i-1], zoomtext[i]), run_time = runtimes[i])
             else:
                 self.play(ShowCreation(curves[0]), FadeIn(zoomtext[i]), run_time = runtimes[i])
-                self.add(curves[0].copy())
-                # self.add(curves[0])
-
+                extravar = curves[0].copy()
+                self.add(extravar)
             self.wait(0.1)
-        # self.wait(0.7)
 
         weird = r"{\norm{x}_{"+str(50)+"}}"
         zoomtext.append(TexMobject(weird, "{=}", "{1}"))
@@ -56,7 +55,33 @@ class PlayNorm(MovingCameraScene, Axes):
         zoomtext[11].add_background_rectangle()
         norm_infty = Square(color = YELLOW_C, stroke_width = 3.5)
         self.play(ShowCreation(norm_infty), ReplacementTransform(zoomtext[10], zoomtext[11]), run_time = 1)
-        self.wait(4)
+        self.wait(2)
+
+        self.play(FadeOut(VGroup(*curves[1:], extravar, norm_infty)), ReplacementTransform(zoomtext[-1], zoomtext[0]), run_time = 1.5)
+        self.wait(1.5)
+
+        fraction_p_values =  np.arange(1.75, 0.25, -0.25)
+        newcolors = color_gradient([MAROON, GREEN_C], len(fraction_p_values))
+        newcurves = []
+        newzoomtext = []
+        for i in range(len(fraction_p_values)):
+            weird = r"{\norm{x}_{"+str(fraction_p_values[i])+"}}"
+            newzoomtext.append(TexMobject(weird, "{=}", "{1}"))
+            newzoomtext[i].set_color(newcolors[i])
+            newzoomtext[i].scale(0.5)
+            newzoomtext[i].shift(UP+2*LEFT)
+            newzoomtext[i].add_background_rectangle()
+            newcurves.append(self.drawcurve(fraction_p_values[i], newcolors[i]))
+            if (i):
+                self.play(Transform(newcurves[-2], newcurves[-1]), ReplacementTransform(newzoomtext[i-1], newzoomtext[i]), run_time = runtimes[i])
+            else:
+                self.play(ShowCreation(newcurves[0]), FadeIn(newzoomtext[i]), run_time = runtimes[i])
+                extravar = newcurves[0].copy()
+                self.add(extravar)
+                self.play(FadeOut(zoomtext[0]))
+            self.wait(0.1)
+
+        self.wait(2)
 
     def drawcurve(self, n, color):
         curve = []
