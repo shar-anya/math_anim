@@ -52,7 +52,7 @@ class WrittenScene(Scene):
         self.play(ApplyMethod(multiplication.to_edge, UP, run_time = 1))
         self.wait(1)
 
-        text[4].shift(4.5*LEFT + 0.3*DOWN)
+        text[4].shift(3.5*LEFT + 0.3*DOWN)
         text[4].scale(0.8)
         text[5].scale(0.8)
 
@@ -62,9 +62,10 @@ class WrittenScene(Scene):
             colmatrices[i].set_color(colcolors[i])
             colmatrices[i].scale(0.8)
 
-        vectorcopy = [vector.copy() for i in range(6)]
+        vectorcopy = [vector.copy() for i in range(3)]
+        vecelement = [TexMobject(col[i]).set_color(MAROON_C) for i in range(3)]
         pluscopy = [text[5].copy() for i in range(3)]
-        self.add(*vectorcopy[:3])
+        self.add(*vectorcopy)
 
         frameBox = [
                     SurroundingRectangle(VGroup(linear_transform[0][i],
@@ -75,22 +76,22 @@ class WrittenScene(Scene):
                     ]
 
         colmatrices[0].next_to(text[4], RIGHT, MED_SMALL_BUFF)
-        vectorcopy[3].next_to(colmatrices[0], RIGHT, SMALL_BUFF)
+        vecelement[0].next_to(colmatrices[0], RIGHT, SMALL_BUFF)
         self.play(ShowCreation(text[4]))
         self.play(ShowCreation(frameBox[0]))
         self.play(Transform(frameBox[0],colmatrices[0]),
-                  Transform(vectorcopy[0], vectorcopy[3]),
+                  Transform(vectorcopy[0], vecelement[0]),
                   run_time = 1.3)
         # self.play()
 
         for i in range(1,3):
             pluscopy[i].next_to(vectorcopy[i-1], RIGHT, MED_SMALL_BUFF)
             colmatrices[i].next_to(pluscopy[i], RIGHT, MED_SMALL_BUFF)
-            vectorcopy[i+3].next_to(colmatrices[i], RIGHT, SMALL_BUFF)
+            vecelement[i].next_to(colmatrices[i], RIGHT, SMALL_BUFF)
             self.play(ShowCreation(pluscopy[i]))
             self.play(ShowCreation(frameBox[i]))
             self.play(Transform(frameBox[i],colmatrices[i]),
-                      Transform(vectorcopy[i], vectorcopy[i+3]),
+                      Transform(vectorcopy[i], vecelement[i]),
                       run_time = 1.3)
             # self.play()
             self.wait(0.5)
