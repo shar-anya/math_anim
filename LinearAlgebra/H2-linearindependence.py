@@ -2,8 +2,8 @@
 # FILEID: H2
 from manimlib.imports import *
 
-VECTORS = [ ([0.5,1], [1.5,2], [2,3]),
-            ([1,2], [2,3], [3,4], [4,5]),
+VECTORS = [
+            [[-2,2], [3,1], [1,3]]
             ]
 class DisplayVectorSet(Scene):
     def construct(self):
@@ -65,10 +65,10 @@ class DisplayVectorSet0(DisplayVectorSet):
 
 class DisplayVectorSet1(DisplayVectorSet):
     CONFIG = {
-        "n": 0
+        "n": 1
     }
 
-class Scene1(LinearTransformationScene):
+class VectorPlay(LinearTransformationScene):
     CONFIG = {
         "include_background_plane": True,
         "include_foreground_plane": True,
@@ -83,58 +83,66 @@ class Scene1(LinearTransformationScene):
         self.wait(1)
 
     def playscene(self, n):
-        clist = [
+        ctext = [
                 TextMobject(r"$c_1 = $"),
                 TextMobject(r"$c_2 = $"),
                 TextMobject(r"$c_2 = $"),
         ]
-        clabelgroup = VGroup(*clist)
-        clabelgroup.scale = 0.8
-        clabelgroup.shift(6.5*LEFT+3.5*UP)
         for i in range(1,3):
-            clist[i].next_to(clist[i-1], DOWN, MED_SMALL_BUFF)
-
+            ctext[i].next_to(ctext[i-1], DOWN, MED_SMALL_BUFF)
+        clabelgp = VGroup(*ctext)
+        clabelgp.scale = 0.8
+        clabelgp.shift(6.5*LEFT+3.5*UP)
+        cvalues = [2, -1, -1]
         colors = [YELLOW, BLUE, MAROON_C]
-        v = VECTORS[n] # ( [0.5,1] , [1.5,2] , [2,3] )
+        cvaluegp = VGroup(*[TextMobject(str(cvalues[i]), color = colors[i]) for i in range(len(colors))])
+        [cvaluegp[i].next_to(clabelgp[i], RIGHT, MED_SMALL_BUFF) for i in range(len(colors))]
         labelgp = VGroup()
-        vecgroup = VGroup()
-        for i in range(len(v)):
-            v1 = self.add_vector(v[i], stroke_width = 4, color = colors[i])
-            vecgroup.add(v1)
-            vlabel = self.get_vector_label(v1, str(v[i][0]) + r"\imath" + "+" + str(v[i][1]) + r"\jmath", at_tip = True)
-            vlabel.scale(0.7)
-            labelgp.add(vlabel)
-            self.play(ShowCreation(vlabel, run_time = 0.5))
+        vectorgp = VGroup()
+        vectors_list = VECTORS[n]
+
+        for i in range(len(vectors_list)):
+            vector = self.add_vector(vectors_list[i], stroke_width = 4, color = colors[i])
+            vector_label = self.get_vector_label(vector, str(vectors_list[i][0]) + r"\imath" + "+" + str(vectors_list[i][1]) + r"\jmath", at_tip = True)
+            vector_label.scale(0.7)
+            vectorgp.add(vector)
+            labelgp.add(vector_label)
+            self.play(ShowCreation(vector_label, run_time = 0.5))
             self.wait(0.5)
+
         self.wait(0.5)
         self.play(FadeOut(labelgp))
         self.wait(0.5)
-        self.play(ShowCreation(clabelgroup))
+        self.play(ShowCreation(clabelgp))
         self.wait(1)
 
-        c = [1, 1, -1]
-        cgroup = VGroup(*[TextMobject(str(c[i]), color = colors[i]) for i in range(len(c))])
-        [cgroup[i].next_to(clabelgroup[i], RIGHT, MED_SMALL_BUFF) for i in range(len(c))]
-        self.play(Write(cgroup[0]), Write(cgroup[1]))
+        self.play(Write(cvaluegp[0]), Write(cvaluegp[1]))
         self.wait(1)
 
-        self.play(ApplyMethod(vecgroup[1].shift,vecgroup[0].get_end()))
-        v0v1 = Vector(vecgroup[1].get_end(), color = GREEN)
-        self.play(GrowArrow(v0v1))
-        self.wait(1)
-        self.play(FadeOut(vecgroup[:2]))
-        self.wait(1)
+        vectorgp1 = VGroup()
+        for i in range(len(vectors_list))
+        vectors_list
+        for i in range(1):
+            vector = self.add_vector(vectors_list[i], stroke_width = 4, color = colors[i], animate = False)
+            vectorgp1.add(Vector(cvalues[i]*vectors_list[i][0]))
+        self.add(vectorgp1)
+        # self.play(ApplyMethod(vecgroup[0].scale, c[0]))
+        # self.play(ApplyMethod(vecgroup[0].shift, -1*vecgroup[0].get_start()))
+        # self.play(ApplyMethod(vecgroup[1].scale, c[1]))
 
-        self.play(Write(cgroup[2]))
-        self.wait(0.5)
-        mv2 = Vector(-1*vecgroup[2].get_end(), color = MAROON_C)
-        # print(-1*vecgroup[2].get_end())
-        self.play(Transform(vecgroup[2],mv2))
-        # self.remove(vecgroup[2])
+        # self.play(ApplyMethod(vecgroup[1].shift,vecgroup[0].get_end()))
+        # v0v1 = Vector(vecgroup[1].get_end(), color = GREEN)
+        # self.play(GrowArrow(v0v1))
+        # self.wait(1)
+        # self.play(FadeOut(vecgroup[:2]))
+        # self.wait(1)
+        #
+        # self.play(Write(cgroup[2]))
+        # self.wait(0.5)
+        # mv2 = Vector(-1*vecgroup[2].get_end(), color = MAROON_C)
+        # self.play(Transform(vecgroup[2],mv2))
         self.wait(2)
 
-        zero = Dot(ORIGIN, color = WHITE)
-        self.play(Transform(VGroup(v0v1, vecgroup[2]), zero))
-        self.wait(2)
-
-        
+        # zero = Dot(ORIGIN, color = WHITE)
+        # self.play(Transform(VGroup(v0v1, vecgroup[2]), zero))
+        # self.wait(2)
