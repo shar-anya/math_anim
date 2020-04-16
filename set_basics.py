@@ -16,7 +16,8 @@ class SetIntersection(Scene): # inheriting class Scene ...
         self.play(ShowCreation(labelA))
         self.play(ShowCreation(circleB))
         self.play(ShowCreation(labelB))
-        self.play(ApplyMethod(circleA.shift,1.5*LEFT), ApplyMethod(circleB.shift,1.5*RIGHT), ApplyMethod(labelA.shift, 1.5*LEFT), ApplyMethod(labelB.shift, 1.5*RIGHT))
+        self.play(ApplyMethod(circleA.shift,1.5*LEFT), ApplyMethod(circleB.shift,1.5*RIGHT))
+        self.play(ApplyMethod(labelA.shift, 1.5*LEFT), ApplyMethod(labelB.shift, 1.5*RIGHT))
 
         labelAB= TextMobject(r"A $\cap$ B")
         labelAB.shift(0.2*LEFT)
