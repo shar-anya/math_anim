@@ -22,7 +22,7 @@ class Scene2(Scene):
         self.wait(2)
         self.clear()
         self.implication()
-        self.wait(2)
+        self.wait(3)
 
     def playpoint(self, rt):
         point2= TexMobject(r"\text{2. If }",r"{p \in \alpha}", r"\text{ and }", "{r<p}", r"\text{, then }", r"{r \in \alpha}").shift(0.25*UP)
@@ -81,6 +81,6 @@ class Scene2(Scene):
         return VGroup(alsoalpha2, then, alsotext)
 
     def implication(self):
-        implication2 = TexMobject(r"{\implies \alpha}", r"\text{doesn't have a lower bound}")
-        self.playpoint(0.5)
+        implication2 = TexMobject(r"{\implies \alpha}", r"\text{ doesn't have a lower bound}").shift(0.4*DOWN)
+        self.playpoint(1)
         self.play(Write(implication2, run_time = 2))
