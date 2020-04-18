@@ -2,7 +2,7 @@ from manimlib.imports import *
 
 class Scene2(Scene):
     def construct(self):
-        self.playpoint()
+        self.playpoint(3)
         self.wait(2)
         self.clear()
         self.createQLine()
@@ -19,11 +19,14 @@ class Scene2(Scene):
         self.marknum(num2)
         self.wait(0.5)
         self.drawfromnum(num2)
-        self.wait(2.5)
+        self.wait(2)
+        self.clear()
+        self.implication()
+        self.wait(2)
 
-    def playpoint(self):
-        point2= TexMobject(r"\text{2. If }",r"{p \in \alpha}", r"\text{ and }", "{r<p}", r"\text{, then }", r"{r \in \alpha}")
-        self.play(ShowCreation(point2, run_time = 3))
+    def playpoint(self, rt):
+        point2= TexMobject(r"\text{2. If }",r"{p \in \alpha}", r"\text{ and }", "{r<p}", r"\text{, then }", r"{r \in \alpha}").shift(0.25*UP)
+        self.play(ShowCreation(point2, run_time = rt))
 
     def createQLine(self):
         self.Q = NumberLine(
@@ -45,12 +48,14 @@ class Scene2(Scene):
         tip2.shift(Q.get_end() - tip2.get_tip_point()/2)
         label = TexMobject(r"\mathbb{Q}", color = PURPLE).shift(Q.get_end()+ MED_LARGE_BUFF*UP)
         Qtip = VGroup(Q, tip1, tip2, label)
+
         self.play(Write(Qtip))
 
     def saynum(self, num):
         latex = "{"+ str(num) + "}"
         saytext = TexMobject(r"\text{Suppose }", latex, r"{\hspace{3pt}\in \alpha").scale(0.7)
         saytext.shift(2*UP)
+
         self.play(Write(saytext))
         return saytext
 
@@ -59,16 +64,23 @@ class Scene2(Scene):
         pointnumlabel = TexMobject(str(num)).scale(0.75)
         pointnumlabel.next_to(pointnum, DOWN, buff = 2.2*SMALL_BUFF)
         pointnum = VGroup(pointnum, pointnumlabel)
+
         self.play(FadeIn(pointnum))
 
     def drawfromnum(self, num):
         alsoalpha = Line(start = num*0.1*RIGHT, end = self.Q.get_start(), color = RED)
-        self.play(ShowCreation(alsoalpha, run_time = 1.5))
         then = TextMobject("Then").scale(0.7).shift(4.6*LEFT+ 1.25*DOWN)
         alsoalpha2 = alsoalpha.copy()
-        self.add(alsoalpha2)
         alsotext = TextMobject(r"also belongs to $\alpha$").scale(0.7)
+
+        self.play(ShowCreation(alsoalpha, run_time = 1.5))
+        self.add(alsoalpha2)
         self.play(FadeIn(then), ApplyMethod(alsoalpha2.shift,1.3*DOWN))
         alsotext.next_to(alsoalpha2, RIGHT)
         self.play(FadeIn(alsotext))
         return VGroup(alsoalpha2, then, alsotext)
+
+    def implication(self):
+        implication2 = TexMobject(r"{\implies \alpha}", r"\text{doesn't have a lower bound}")
+        self.playpoint(0.5)
+        self.play(Write(implication2, run_time = 2))
