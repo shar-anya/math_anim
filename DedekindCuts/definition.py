@@ -7,12 +7,19 @@ class Scene2(Scene):
         self.clear()
         self.createQLine()
         self.wait(1)
-        saytext1 = self.saynum(11)
-        self.marknum(11)
+        num1 = 11
+        num2 = 25
+        saytext1 = self.saynum(num1)
+        self.marknum(num1)
         self.wait(0.5)
-        alsostuff1 = self.drawfromnum(11)
-        self.wait(2)
+        alsostuff1 = self.drawfromnum(num1)
+        self.wait(1)
         self.play(FadeOut(saytext1), FadeOut(alsostuff1))
+        self.saynum(num2)
+        self.marknum(num2)
+        self.wait(0.5)
+        self.drawfromnum(num2)
+        self.wait(2.5)
 
     def playpoint(self):
         point2= TexMobject(r"\text{2. If }",r"{p \in \alpha}", r"\text{ and }", "{r<p}", r"\text{, then }", r"{r \in \alpha}")
@@ -42,7 +49,7 @@ class Scene2(Scene):
 
     def saynum(self, num):
         latex = "{"+ str(num) + "}"
-        saytext = TexMobject(r"\text{Suppose }", latex, r"{\in \alpha").scale(0.7)
+        saytext = TexMobject(r"\text{Suppose }", latex, r"{\hspace{3pt}\in \alpha").scale(0.7)
         saytext.shift(2*UP)
         self.play(Write(saytext))
         return saytext
@@ -64,4 +71,4 @@ class Scene2(Scene):
         self.play(FadeIn(then), ApplyMethod(alsoalpha2.shift,1.3*DOWN))
         alsotext.next_to(alsoalpha2, RIGHT)
         self.play(FadeIn(alsotext))
-        return VGroup(alsoalpha, alsotext)
+        return VGroup(alsoalpha2, then, alsotext)
