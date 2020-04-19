@@ -2,23 +2,20 @@ from manimlib.imports import *
 
 class Scene2(Scene):
     def construct(self):
+        nums = [11,25]
         self.playpoint(3)
         self.wait(2)
         self.clear()
         self.createQLine()
         self.wait(1)
-        num1 = 11
-        num2 = 25
-        saytext1 = self.saynum(num1)
-        self.marknum(num1)
-        self.wait(0.5)
-        alsostuff1 = self.drawfromnum(num1)
-        self.wait(1)
-        self.play(FadeOut(saytext1), FadeOut(alsostuff1))
-        self.saynum(num2)
-        self.marknum(num2)
-        self.wait(0.5)
-        self.drawfromnum(num2)
+        for i in range(2)::
+            saytext = self.saynum(num[i])
+            self.marknum(num[1]])
+            self.wait(0.5)
+            alsostuff = self.drawfromnum(num[i])
+            self.wait(1)
+            if not i:
+                self.play(FadeOut(saytext), FadeOut(alsostuff)) # only first time
         self.wait(2)
         self.clear()
         self.implication()
